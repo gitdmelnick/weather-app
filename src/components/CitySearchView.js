@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import Autosuggest from "react-autosuggest";
 
 
-const CitySearchView = () => {
+const CitySearchView = ({setLocation}) => {
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-  const citiesApi = {
+  const api = {
     base: "https://wft-geo-db.p.rapidapi.com/v1/geo/cities?",
     headers: {
       "x-rapidapi-key": "adcf43fa4bmsh46df9a8c48ff624p19b60ejsnecb79d168666",
@@ -15,19 +15,23 @@ const CitySearchView = () => {
     },
   };
 
+  const onChange = (event, {newValue}) => {
+    setQuery(newValue);
+  };
+  
   const inputProps = {
-    placeholder: "Enter city",
+    placeholder: "Enter a city",
     value: query,
     onChange: onChange,
   };
   
   const onSuggestionsFetchRequested = ({ value }) => {
-    if(value.match(/^([a-z0-9]{1,})$/)) {
+    if(value.match(/^([a-z0-9]{2,})$/)) {
       fetch(
-        `${citiesApi.base}namePrefix=${value}`,
+        `${api.base}namePrefix=${value}`,
         {
           method: "GET",
-          headers: citiesApi.headers
+          headers: api.headers
         }
       )
         .then((response) => response.json())
@@ -47,7 +51,7 @@ const CitySearchView = () => {
   };
 
   const onSuggestionSelected = (event, {suggestion}) => {
-      console.log(`latitude=${suggestion.latitude}, longitude=${suggestion.longitude}`)
+    setLocation(suggestion)
   }
 
   const getSuggestionValue = suggestion => `${suggestion.name}, ${suggestion.region}, ${suggestion.country}`;
@@ -57,14 +61,6 @@ const CitySearchView = () => {
       {`${suggestion.name}, ${suggestion.region}, ${suggestion.country}`}
     </span>
   );
-
-  const onChange = (event, {newValue}) => {
-    setQuery(newValue);
-  };
-  
-  useEffect(() => {
-    
-  }, [query,suggestions])
 
   return (
     <>

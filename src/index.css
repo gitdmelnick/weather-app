@@ -1,3 +1,14 @@
+:root {
+  --clr-background: #ffa07a;
+  --clr-primary: #fff;
+  --clr-secondary: #eee;
+
+  --clr-neutral: #444;
+
+  /* --ff-primary: 'Roboto', sans-serif;
+  --ff-accent: 'Playfair Display', serif; */
+}
+
 * {
   margin:0;
   padding: 0;
@@ -6,6 +17,7 @@
 
 body {
   font-family: Helvetica, sans-serif;
+  background-color: var(--clr-background);
 }
 
 .react-autosuggest__container {
@@ -13,13 +25,17 @@ body {
 }
 
 .react-autosuggest__input {
-  width: 240px;
+  width: 60%;
   height: 2em;
   padding: 10px 20px;
   font-family: Helvetica, sans-serif;
   font-weight: 300;
   font-size: 1em;
-  border: 1px solid #aaa;
+  color: var(--clr-neutral);
+  background-color: var(--clr-secondary);
+  box-shadow: var(--clr-primary);
+  border: 0;
+  /* border: 1px solid #aaa; */
   border-radius: 4px;
 }
 
@@ -41,8 +57,9 @@ body {
   position: absolute;
   top: 51px;
   width: 280px;
-  border: 1px solid #aaa;
-  background-color: #fff;
+  /* border: 1px solid #aaa; */
+  border:0;
+  background-color: var(--clr-secondary);
   font-family: Helvetica, sans-serif;
   font-weight: 300;
   font-size: 16px;
@@ -64,4 +81,59 @@ body {
 
 .react-autosuggest__suggestion--highlighted {
   background-color: #ddd;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  flex-basis: 100%;
+  background-color: var(--clr-secondary);
+  color: var(--clr-neutral);
+  margin: 0 1em;
+  border-radius: 10px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.forecast-container {
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  width: 60%;
+  padding: 2px 16px;
+}
+
+.card-body > * {
+  margin: 1em 0;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .forecast-container {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .autosuggest-input {
+    width: 90%;
+  }
+
+  .card {
+    margin: 0.5em 0;
+  }
+
+  /* .card > * {
+    display: inline-block;
+  } */
+  .card-body > * {
+    text-align: left;
+  }
+}
+
+.card img {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
