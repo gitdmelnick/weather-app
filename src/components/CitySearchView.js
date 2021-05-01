@@ -8,27 +8,28 @@ const CitySearchView = ({setLocation}) => {
   const [suggestions, setSuggestions] = useState([]);
 
   const api = {
-    base: "https://wft-geo-db.p.rapidapi.com/v1/geo/cities?",
-    headers: {
-      "x-rapidapi-key": "adcf43fa4bmsh46df9a8c48ff624p19b60ejsnecb79d168666",
-      "x-rapidapi-host": "wft-geo-db.p.rapidapi.com",
-    },
+    base: " https://api.mapbox.com/geocoding/v5/mapbox.places/",
+    key: "pk.eyJ1IjoiamRldjEwNCIsImEiOiJja280aHBsMTcwOGZqMnZzNnh0cTZiZzE5In0.TEdlkA38fYyfqZ7H3U0WCQ"
   };
 
   const onChange = (event, {newValue}) => {
     setQuery(newValue);
   };
   
+ 
   const inputProps = {
     placeholder: "Enter a city",
     value: query,
     onChange: onChange,
   };
   
+  //Sends request for city search each time input value is changed. 
+  //Search result may contain 'duplicate' values (e.g. "Kyiv, Ukraine", "Київ, Kyiv, Ukraine") due to nature of api.
+  //Autocomple results can be changed with addition/removal of values from 'types' parameter .
   const onSuggestionsFetchRequested = ({ value }) => {
     if(value.match(/^([a-z0-9]{2,})$/)) {
       fetch(
-        `${api.base}namePrefix=${value}`,
+        `${api.base}${value}.json?access_token=${api.key}&types=country,region,district,place&autocomplete=true`,
         {
           method: "GET",
           headers: api.headers
@@ -36,7 +37,8 @@ const CitySearchView = ({setLocation}) => {
       )
         .then((response) => response.json())
         .then((data) => {
-          setSuggestions(data.data)
+          console.log(data.features)
+          setSuggestions(data.features)
         })
         .catch((err) => {
           setSuggestions([])
@@ -51,14 +53,15 @@ const CitySearchView = ({setLocation}) => {
   };
 
   const onSuggestionSelected = (event, {suggestion}) => {
-    setLocation(suggestion)
+    setLocation(suggestion.center)
+    console.log("Suggestion", suggestion.center)
   }
 
-  const getSuggestionValue = suggestion => `${suggestion.name}, ${suggestion.region}, ${suggestion.country}`;
+  const getSuggestionValue = suggestion => `${suggestion.place_name}`;
 
   const renderSuggestion = suggestion => (
     <span>
-      {`${suggestion.name}, ${suggestion.region}, ${suggestion.country}`}
+      {`${suggestion.place_name}`}
     </span>
   );
 

@@ -4,7 +4,9 @@ import {useState} from 'react'
 
 function App() {
 
-  const [location, setLocation] = useState({})
+  //Contains coordinates of chosen city, location (i.e latitude, longitude).
+  // #TODO: Replace with better solution. 
+  const [location, setLocation] = useState([])
 
   return (
     <div className="App">
