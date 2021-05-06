@@ -1,14 +1,56 @@
 import { useState, useEffect } from "react";
 
+
+
 const WeatherCard = ({ dailyForecast }) => {
+
+  const [renderedForecast, setRenderedForecast] =  useState({})
+
+  const convertForecast = () => {
+    let hourlyTemps = dailyForecast.map((object) =>
+      Math.round(object.temp)
+    );
+
+    let minTemp = Math.min(...hourlyTemps);
+    let maxTemp = Math.max(...hourlyTemps);
+    let sum = hourlyTemps.reduce((a, b) => a + b);
+    let averageTemp = Math.round(sum / hourlyTemps.length);
+
+    let date = new Date(dailyForecast[0].timestamp_local);
+    let dateString = date.toDateString();
+    dateString = dateString.substring(0, dateString.lastIndexOf(" "))
+
+    // Takes icon of mid element in array
+    let icon = dailyForecast[Math.round(dailyForecast.length / 2)].weather.icon;
+    let iconUrl = `${process.env.PUBLIC_URL}/weather_icons/${icon}.png`;
+    
+    let description = dailyForecast[Math.round(dailyForecast.length / 2)].weather.description
+
+    return {
+      minTemp,
+      maxTemp,
+      averageTemp,
+      description,
+      dateString,
+      iconUrl,
+    };
+  };
+
+  useEffect(() => {
+    if(Object.entries(dailyForecast).length > 0) {
+      setRenderedForecast(convertForecast())
+    }
+  }, [dailyForecast])
+
   return (
     <div className="card">
-      <img src="" alt="Avatar" style={{ width: "28em" }} />
+      <img src={renderedForecast.iconUrl} alt="Icon" />
       <div className="card-body">
+      <p>{renderedForecast.description}</p>
         <h4>
-          <b>{dailyForecast[0].datetime}</b>
+          <b>{renderedForecast.dateString}</b>
         </h4>
-        <p>{dailyForecast[0].app_temp}</p>
+        <h3>{renderedForecast.averageTemp}&#176;</h3>
       </div>
     </div>
   );
@@ -49,18 +91,21 @@ const WeatherForecastView = ({ location }) => {
 
   //Fetch 5 day forecast for location.
   useEffect(() => {
-    if (location.length > 0) {
+    if (location.length > 0 ) {
+      // handleLoading();
       setTimeout(() => {
-        fetch(`${api.base}lat=${location[0]}&lon=${location[1]}`, {
+        fetch(`${api.base}lat=${location[1]}&lon=${location[0]}`, {
           method: "GET",
           headers: api.headers,
         })
           .then((response) => response.json())
           .then((data) => {
             setForecast(sortHourlyToDaily(data.data));
+            // handleLoading();
           })
           .catch((err) => {
             setForecast([]);
+            // handleLoading();
             // #TODO: Implement proper error handling
             console.error(err);
           });
@@ -72,17 +117,22 @@ const WeatherForecastView = ({ location }) => {
   useEffect(() => {
     if (forecast.length > 0) {
       console.log(forecast);
-      // forecast.forEach((value) => {});
+      forecast.forEach((value) => {});
     }
   }, [forecast]);
 
-  const weatherCards =   forecast.map((obj, i) => {
+  const weatherCards = forecast.map((obj, i) => {
     return <WeatherCard dailyForecast={obj} key={i} />;
   });
 
-
   return (
-    <>{forecast && <div className="forecast-container">{weatherCards}</div>}</>
+    <>
+      {forecast && (
+        <div className="container">
+          <div className="cards">{weatherCards}</div>
+        </div>
+      )}
+    </>
   );
 };
 
