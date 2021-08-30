@@ -1,3 +1,11 @@
+## Weather App
+Unfinished app that provides 6-day weather forcast for a given city. Auto-suggest feature helps searching for a specific city or location.
+
+## APIs
+GeoDB Cities: https://rapidapi.com/wirefreethought/api/geodb-cities/details - Fetches locations (latitude and longitude).
+Weatherbit: https://www.weatherbit.io/api/meta - Weather data.
+
+
 ## Available Scripts
 
 In the project directory, you can run:
